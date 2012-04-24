@@ -6,6 +6,8 @@
  *   Rewritten based on work by Prafulla WADASKAR <prafulla.wadaskar@st.com>
  * Copyright (C) 2011 Linus Walleij <linus.walleij@linaro.org>
  *
+ *       Updated 2012 Fabrizio Ghiringhelli <fghiro@gmail.com>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
@@ -957,6 +959,7 @@ static struct gpio_chip nmk_gpio_template = {
 	.to_irq			= nmk_gpio_to_irq,
 	.dbg_show		= nmk_gpio_dbg_show,
 	.can_sleep		= 0,
+	.ngpio		= NMK_GPIO_PER_CHIP,
 };
 
 void nmk_gpio_clocks_enable(void)
@@ -1134,7 +1137,6 @@ static int __devinit nmk_gpio_probe(struct platform_device *dev)
 
 	chip = &nmk_chip->chip;
 	chip->base = pdata->first_gpio;
-	chip->ngpio = pdata->num_gpio;
 	chip->label = pdata->name ?: dev_name(&dev->dev);
 	chip->dev = &dev->dev;
 	chip->owner = THIS_MODULE;
