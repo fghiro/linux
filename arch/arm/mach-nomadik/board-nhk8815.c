@@ -3,6 +3,8 @@
  *
  *  Copyright (C) STMicroelectronics
  *
+ *  Updated 2012 Fabrizio Ghiringhelli <fghiro@gmail.com>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2, as
  * published by the Free Software Foundation.
@@ -21,6 +23,7 @@
 #include <linux/mtd/onenand.h>
 #include <linux/mtd/partitions.h>
 #include <linux/io.h>
+#include <linux/i2c.h>
 #include <asm/hardware/vic.h>
 #include <asm/sizes.h>
 #include <asm/mach-types.h>
@@ -36,6 +39,8 @@
 #include <mach/fsmc.h>
 
 #include "cpu-8815.h"
+
+#include <mach/lis3lv02d-nhk8815.h>
 
 /* Initial value for SRC control register: all timers use MXTAL/8 source */
 #define SRC_CR_INIT_MASK	0x00007fff
@@ -265,12 +270,27 @@ static struct sys_timer nomadik_timer = {
 	.init	= nomadik_timer_init,
 };
 
+/* I2C devices */
+static struct i2c_board_info nhk8815_i2c_devices[] = {
+	{
+		I2C_BOARD_INFO("lis3lv02d", 0x3A >> 1),
+		.irq = NOMADIK_GPIO_TO_IRQ(82),
+		/* No platform data: use driver defaults */
+	},
+	/* will add more devices */
+};
+
 static void __init nhk8815_platform_init(void)
 {
 	int i;
 
 	cpu8815_platform_init();
 	nhk8815_onenand_init();
+
+	/* Register I2C devices on bus #0 (scl0, sda0) */
+	i2c_register_board_info(0, nhk8815_i2c_devices,
+			ARRAY_SIZE(nhk8815_i2c_devices));
+
 	platform_add_devices(nhk8815_platform_devices,
 			     ARRAY_SIZE(nhk8815_platform_devices));
 
