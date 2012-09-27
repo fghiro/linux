@@ -630,6 +630,14 @@ config I2C_SIMTEC
 	  This driver can also be built as a module. If so, the module
 	  will be called i2c-simtec.
 
+config I2C_NOMADIK_STN8815
+	tristate "ST-Ericsson Nomadik STN8815 I2C adapter"
+	depends on ARCH_NOMADIK
+	default y if MACH_NOMADIK_8815
+	help
+	  If you say yes to this option, support will be included for the
+	  I2C interface on the ST-Ericsson Nomadik STN8815 multimedia processor.
+
 config I2C_STU300
 	tristate "ST Microelectronics DDC I2C interface"
 	depends on MACH_U300

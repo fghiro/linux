@@ -16,7 +16,7 @@
 #include <mach/irqs.h>
 #include <plat/gpio-nomadik.h>
 
-#include <mach/i2c-stn8815.h>
+#include <linux/i2c-stn8815.h>
 
 /*
  * There are two busses in the 8815NHK.
@@ -29,7 +29,7 @@
 #define	I2C_SCL1_PIN	53
 #define	I2C_SDA1_PIN	54
 
-#if defined(CONFIG_I2C_GPIO)
+#if defined(CONFIG_I2C_GPIO) || defined(CONFIG_I2C_GPIO_MODULE)
 static struct i2c_gpio_platform_data nhk8815_i2c_data0 = {
 	/* keep defaults for timeouts; pins are push-pull bidirectional */
 	.scl_pin = I2C_SCL0_PIN,
@@ -74,7 +74,7 @@ static int __init nhk8815_i2c_init(void)
 arch_initcall(nhk8815_i2c_init);
 
 
-#else
+#elif defined(CONFIG_I2C_NOMADIK_STN8815) || (CONFIG_I2C_NOMADIK_STN8815_MODULE)
 
 static struct resource nhk8815_i2c_resources[] = {
 	{
@@ -141,4 +141,11 @@ static int __init nhk8815_i2c_init(void)
 }
 arch_initcall(nhk8815_i2c_init);
 
+
+#else
+
+static int __init nhk8815_i2c_init(void) {}
+arch_initcall(nhk8815_i2c_init);
+
 #endif
+
